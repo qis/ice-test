@@ -1,0 +1,50 @@
+find_package(ZLIB REQUIRED)
+find_package(OpenSSL REQUIRED)
+
+find_path(LIBSSH_INCLUDE_DIR libssh.h PATH_SUFFIXES libssh)
+find_library(LIBSSH_LIBRARY NAMES ssh libssh)
+
+if(LIBSSH_INCLUDE_DIR)
+  file(STRINGS "${LIBSSH_INCLUDE_DIR}/libssh.h" libssh_version_str REGEX
+    "^#define[\t ]+LIBSSH_VERSION_(MAJOR|MINOR|MICRO)[\t ]+.*")
+
+  string(REGEX REPLACE "^.*LIBSSH_VERSION_MAJOR[\t ]+([0-9]+).*$" "\\1" LIBSSH_VERSION_MAJOR "${libssh_version_str}")
+  string(REGEX REPLACE "^.*LIBSSH_VERSION_MINOR[\t ]+([0-9]+).*$" "\\1" LIBSSH_VERSION_MINOR "${libssh_version_str}")
+  string(REGEX REPLACE "^.*LIBSSH_VERSION_MICRO[\t ]+([0-9]+).*$" "\\1" LIBSSH_VERSION_PATCH "${libssh_version_str}")
+
+  set(LIBSSH_VERSION "${LIBSSH_VERSION_MAJOR}.${LIBSSH_VERSION_MINOR}.${LIBSSH_VERSION_PATCH}")
+endif()
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(LibSSH FOUND_VAR LIBSSH_FOUND VERSION_VAR LIBSSH_VERSION
+  REQUIRED_VARS LIBSSH_LIBRARY LIBSSH_INCLUDE_DIR FAIL_MESSAGE DEFAULT_MSG)
+
+mark_as_advanced(
+  LIBSSH_LIBRARY
+  LIBSSH_INCLUDE_DIR
+  LIBSSH_VERSION_MAJOR
+  LIBSSH_VERSION_MINOR
+  LIBSSH_VERSION_PATCH
+  LIBSSH_VERSION)
+
+if(LIBSSH_FOUND)
+  add_library(LibSSH::LibSSH UNKNOWN IMPORTED)
+  set_target_properties(LibSSH::LibSSH PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "${LIBSSH_INCLUDE_DIR}"
+    IMPORTED_LOCATION "${LIBSSH_LIBRARY}"
+    IMPORTED_LINK_INTERFACE_LANGUAGES "C")
+  if(WIN32)
+    set_target_properties(LibSSH::LibSSH PROPERTIES
+      IMPORTED_LINK_INTERFACE_LIBRARIES "ZLIB::ZLIB;OpenSSL::Crypto;Crypt32.lib")
+    if(LIBSSH_LIBRARY MATCHES ".lib$")
+      set_target_properties(LibSSH::LibSSH PROPERTIES
+        INTERFACE_COMPILE_DEFINITIONS "LIBSSH_STATIC=1")
+    endif()
+  elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set_target_properties(LibSSH::LibSSH PROPERTIES
+      IMPORTED_LINK_INTERFACE_LIBRARIES "ZLIB::ZLIB;OpenSSL::Crypto;dl")
+  else()
+    set_target_properties(LibSSH::LibSSH PROPERTIES
+      IMPORTED_LINK_INTERFACE_LIBRARIES "ZLIB::ZLIB;OpenSSL::Crypto")
+  endif()
+endif()
