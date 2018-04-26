@@ -17,31 +17,28 @@ void thread_local_storage::close_type::operator()(std::uintptr_t handle) noexcep
 #endif
 }
 
-thread_local_storage::thread_local_storage() {
+thread_local_storage::thread_local_storage() noexcept {
 #if ICE_OS_WIN32
   handle_.reset(::TlsAlloc());
-  if (!handle_) {
-    throw ice::system_error(::GetLastError(), "thread local storage");
-  }
 #else
   pthread_key_t handle{};
-  if (const auto rc = ::pthread_key_create(&handle, nullptr)) {
-    throw ice::system_error(rc, "allocate thread local storage");
+  if (::pthread_key_create(&handle, nullptr) == 0) {
+    handle_.reset(handle);
   }
-  handle_.reset(handle);
 #endif
 }
 
-void thread_local_storage::set(void* value) {
+ice::error_code thread_local_storage::set(void* value) noexcept {
 #if ICE_OS_WIN32
   if (!::TlsSetValue(handle_.as<DWORD>(), value)) {
-    throw ice::system_error(::GetLastError(), "set thread local storage value");
+    return ::GetLastError();
   }
 #else
   if (const auto rc = ::pthread_setspecific(handle_.as<pthread_key_t>(), value)) {
-    throw ice::system_error(rc, "set thread local storage value");
+    return rc;
   }
 #endif
+  return {};
 }
 
 void* thread_local_storage::get() noexcept {

@@ -1,5 +1,6 @@
 #pragma once
 #include <ice/config.h>
+#include <ice/error.h>
 #include <ice/handle.h>
 #include <cstdint>
 
@@ -38,9 +39,13 @@ public:
   using handle_type = ice::handle<std::uintptr_t, 0, close_type>;
   using handle_view = handle_type::view;
 
-  thread_local_storage();
+  thread_local_storage() noexcept;
 
-  void set(void* value);
+  constexpr explicit operator bool() const noexcept {
+    return handle_.valid();
+  }
+
+  ice::error_code set(void* value) noexcept;
 
   void* get() noexcept;
   const void* get() const noexcept;

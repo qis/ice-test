@@ -101,14 +101,17 @@ void context::run(std::size_t event_buffer_size) {
   using size_type = int;
 #endif
 
-  ice::error_code ec;
+  if (const auto ec = index_.set(this)) {
+    throw ice::system_error(ec, "context index");
+  }
+
   std::vector<data_type> events;
   events.resize(event_buffer_size);
 
   const auto events_data = events.data();
   const auto events_size = static_cast<size_type>(events.size());
 
-  index_.set(this);
+  ice::error_code ec;
   state_.fetch_add(thread_count_increment, std::memory_order_relaxed);
   while (true) {
 #if ICE_OS_WIN32
