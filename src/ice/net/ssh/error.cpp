@@ -1,16 +1,7 @@
-#include <ice/error.h>
+#include <ice/net/ssh/error.h>
 #include <libssh2.h>
 
-namespace ice::ssh {
-
-const std::error_category& error_category() noexcept;
-
-class exception : public ice::system_error {
-public:
-  exception(std::string what, int code) : ice::system_error(std::move(what), code, error_category()) {
-  }
-};
-
+namespace ice::net::ssh {
 namespace detail {
 
 class error_category : public std::error_category {
@@ -75,9 +66,9 @@ public:
 
 }  // namespace detail
 
-inline const std::error_category& error_category() noexcept {
+const std::error_category& error_category() noexcept {
   static const detail::error_category category;
   return category;
 }
 
-}  // namespace ice::ssh
+}  // namespace ice::net::ssh
