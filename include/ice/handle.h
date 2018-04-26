@@ -35,7 +35,7 @@ public:
 
   constexpr handle() noexcept = default;
 
-  template <typename V, typename = std::enable_if_t<std::is_integral_v<V> || std::is_pointer_v<V>>>
+  template <typename V, typename = std::enable_if_t<ice::is_handle_v<V>>>
   constexpr explicit handle(V value) noexcept {
     if constexpr (std::is_pointer_v<value_type> || std::is_pointer_v<V>) {
       value_ = reinterpret_cast<value_type>(value);
@@ -95,7 +95,7 @@ public:
     reset(invalid_value());
   }
 
-  template <typename V, typename = std::enable_if_t<std::is_integral_v<V> || std::is_pointer_v<V>>>
+  template <typename V, typename = std::enable_if_t<ice::is_handle_v<V>>>
   void reset(V value) noexcept {
     if (valid()) {
       C{}(*this);
@@ -107,7 +107,7 @@ public:
     }
   }
 
-  template <typename V, typename = std::enable_if_t<std::is_integral_v<V> || std::is_pointer_v<V>>>
+  template <typename V, typename = std::enable_if_t<ice::is_handle_v<V>>>
   constexpr V as() const noexcept {
     if constexpr (std::is_pointer_v<value_type> || std::is_pointer_v<V>) {
       return reinterpret_cast<V>(value_);
