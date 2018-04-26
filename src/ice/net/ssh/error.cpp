@@ -1,5 +1,6 @@
 #include <ice/net/ssh/error.h>
 #include <libssh2.h>
+#include <string>
 
 namespace ice::net::ssh {
 namespace detail {
