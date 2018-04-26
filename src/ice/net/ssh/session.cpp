@@ -80,4 +80,17 @@ ice::async<void> session::connect(const ice::net::endpoint& ep, const std::strin
   co_return;
 }
 
+ice::async<ssh::channel> session::open() {
+  while (true) {
+    const auto channel = libssh2_channel_open_session(handle_);
+    if (channel) {
+      co_return ssh::channel(ssh::channel::handle_type(channel), socket_, transport_);
+    }
+    if (const auto rc = libssh2_session_last_error(handle_, nullptr, nullptr, 0); rc != LIBSSH2_ERROR_EAGAIN) {
+      throw ssh::domain_error(rc, "open channel");
+    }
+    co_await transport_;
+  }
+}
+
 }  // namespace ice::net::ssh

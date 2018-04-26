@@ -3,6 +3,7 @@
 #include <ice/context.h>
 #include <ice/handle.h>
 #include <ice/net/endpoint.h>
+#include <ice/net/ssh/channel.h>
 #include <ice/net/ssh/transport.h>
 #include <ice/net/tcp/socket.h>
 #include <string>
@@ -21,9 +22,16 @@ public:
 
   session(ice::context& context, int family);
 
+  session(session&& other) = delete;
+  session& operator=(session&& other) = delete;
+
+  session(const session& other) = delete;
+  session& operator=(const session& other) = delete;
+
   ~session();
 
   ice::async<void> connect(const ice::net::endpoint& ep, const std::string& user, const std::string& pass);
+  ice::async<ssh::channel> open();
 
   constexpr handle_type& handle() noexcept {
     return handle_;
@@ -39,6 +47,14 @@ public:
 
   constexpr const net::tcp::socket& socket() const noexcept {
     return socket_;
+  }
+
+  constexpr ssh::transport& transport() noexcept {
+    return transport_;
+  }
+
+  constexpr const ssh::transport& transport() const noexcept {
+    return transport_;
   }
 
 private:
