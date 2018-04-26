@@ -1,5 +1,5 @@
 #include <ice/utility.h>
-#include <ice/error.h>
+#include <cassert>
 
 #if ICE_OS_WIN32
 #include <windows.h>
@@ -11,9 +11,11 @@ namespace ice {
 
 void thread_local_storage::close_type::operator()(std::uintptr_t handle) noexcept {
 #if ICE_OS_WIN32
-  ::TlsFree(static_cast<DWORD>(handle));
+  [[maybe_unused]] const auto rc = ::TlsFree(static_cast<DWORD>(handle));
+  assert(rc);
 #else
-  ::pthread_key_delete(static_cast<pthread_key_t>(handle));
+  [[maybe_unused]] const auto rc = ::pthread_key_delete(static_cast<pthread_key_t>(handle));
+  assert(rc == 0);
 #endif
 }
 
@@ -26,19 +28,17 @@ thread_local_storage::thread_local_storage() noexcept {
     handle_.reset(handle);
   }
 #endif
+  assert(handle_);
 }
 
-ice::error_code thread_local_storage::set(void* value) noexcept {
+void thread_local_storage::set(void* value) noexcept {
 #if ICE_OS_WIN32
-  if (!::TlsSetValue(handle_.as<DWORD>(), value)) {
-    return ::GetLastError();
-  }
+  [[maybe_unused]] const auto rc = ::TlsSetValue(handle_.as<DWORD>(), value);
+  assert(rc);
 #else
-  if (const auto rc = ::pthread_setspecific(handle_.as<pthread_key_t>(), value)) {
-    return rc;
-  }
+  [[maybe_unused]] const auto rc = ::pthread_setspecific(handle_.as<pthread_key_t>(), value);
+  assert(rc == 0);
 #endif
-  return {};
 }
 
 void* thread_local_storage::get() noexcept {

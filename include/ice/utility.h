@@ -1,6 +1,5 @@
 #pragma once
 #include <ice/config.h>
-#include <ice/error.h>
 #include <ice/handle.h>
 #include <cstdint>
 
@@ -45,7 +44,7 @@ public:
     return handle_.valid();
   }
 
-  ice::error_code set(void* value) noexcept;
+  void set(void* value) noexcept;
 
   void* get() noexcept;
   const void* get() const noexcept;

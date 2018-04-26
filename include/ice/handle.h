@@ -85,6 +85,36 @@ protected:
   value_type value_ = invalid_value();
 };
 
+template <typename T, auto I>
+constexpr bool operator==(const ice::handle_view<T, I>& lhs, const ice::handle_view<T, I>& rhs) noexcept {
+  return lhs.value() == rhs.value();
+}
+
+template <typename T, auto I, typename C>
+constexpr bool operator!=(const ice::handle_view<T, I>& lhs, const ice::handle_view<T, I>& rhs) noexcept {
+  return !(rhs == lhs);
+}
+
+template <typename T, auto I, typename C>
+constexpr bool operator==(const ice::handle_view<T, I>& lhs, std::common_type_t<T> value) noexcept {
+  return lhs.value() == value;
+}
+
+template <typename T, auto I, typename C>
+constexpr bool operator!=(const ice::handle_view<T, I>& lhs, std::common_type_t<T> value) noexcept {
+  return !(lhs == value);
+}
+
+template <typename T, auto I, typename C>
+constexpr bool operator==(std::common_type_t<T> value, const ice::handle_view<T, I>& rhs) noexcept {
+  return value == rhs.value();
+}
+
+template <typename T, auto I, typename C>
+constexpr bool operator!=(std::common_type_t<T> value, const ice::handle_view<T, I>& rhs) noexcept {
+  return !(value == rhs);
+}
+
 template <typename T, auto I, typename C>
 class handle final : public handle_view<T, I> {
 public:
@@ -140,35 +170,5 @@ public:
     }
   }
 };
-
-template <typename T, auto I>
-constexpr bool operator==(const ice::handle_view<T, I>& lhs, const ice::handle_view<T, I>& rhs) noexcept {
-  return lhs.value() == rhs.value();
-}
-
-template <typename T, auto I, typename C>
-constexpr bool operator!=(const ice::handle_view<T, I>& lhs, const ice::handle_view<T, I>& rhs) noexcept {
-  return !(rhs == lhs);
-}
-
-template <typename T, auto I, typename C>
-constexpr bool operator==(const ice::handle_view<T, I>& lhs, std::common_type_t<T> value) noexcept {
-  return lhs.value() == value;
-}
-
-template <typename T, auto I, typename C>
-constexpr bool operator!=(const ice::handle_view<T, I>& lhs, std::common_type_t<T> value) noexcept {
-  return !(lhs == value);
-}
-
-template <typename T, auto I, typename C>
-constexpr bool operator==(std::common_type_t<T> value, const ice::handle_view<T, I>& rhs) noexcept {
-  return value == rhs.value();
-}
-
-template <typename T, auto I, typename C>
-constexpr bool operator!=(std::common_type_t<T> value, const ice::handle_view<T, I>& rhs) noexcept {
-  return !(value == rhs);
-}
 
 }  // namespace ice
