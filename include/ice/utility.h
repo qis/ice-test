@@ -35,7 +35,11 @@ public:
     void operator()(std::uintptr_t handle) noexcept;
   };
 
+#if ICE_OS_WIN32
   using handle_type = ice::handle<std::uintptr_t, 0, close_type>;
+#else
+  using handle_type = ice::handle<std::uintptr_t, -1, close_type>;
+#endif
   using handle_view = handle_type::view;
 
   thread_local_storage() noexcept;
