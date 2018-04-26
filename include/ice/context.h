@@ -25,6 +25,7 @@ public:
   };
   using handle_type = ice::handle<int, -1, close_type>;
 #endif
+  using handle_view = handle_type::view;
 
   constexpr static std::uint32_t stop_requested_flag = 1;
   constexpr static std::uint32_t thread_count_increment = 2;
@@ -105,9 +106,9 @@ public:
   }
 
 private:
-  context::handle_type::value_type context_;
+  context::handle_view context_;
 #if ICE_OS_LINUX
-  context::handle_type::value_type handle_;
+  context::handle_view handle_;
 #endif
   const bool ready_;
 };

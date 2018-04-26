@@ -36,6 +36,7 @@ public:
   };
 
   using handle_type = ice::handle<std::uintptr_t, 0, close_type>;
+  using handle_view = handle_type::view;
 
   thread_local_storage();
 

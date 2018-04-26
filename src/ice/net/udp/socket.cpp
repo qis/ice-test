@@ -42,7 +42,7 @@ bool recv::await_ready() noexcept {
 
 bool recv::suspend() noexcept {
 #if ICE_OS_WIN32
-  const auto socket = static_cast<SOCKET>(socket_);
+  const auto socket = socket_.as<SOCKET>();
   const auto buffer = reinterpret_cast<LPWSABUF>(&buffer_);
   auto& sockaddr = endpoint_.sockaddr();
   auto& size = endpoint_.size();
@@ -62,7 +62,7 @@ bool recv::suspend() noexcept {
 
 bool recv::resume() noexcept {
 #if ICE_OS_WIN32
-  const auto socket = reinterpret_cast<HANDLE>(socket_);
+  const auto socket = socket_.as<HANDLE>();
   if (!::GetOverlappedResult(socket, get(), &bytes_, FALSE)) {
     ec_ = ::GetLastError();
   }
@@ -96,7 +96,7 @@ bool send::await_ready() noexcept {
 
 bool send::suspend() noexcept {
 #if ICE_OS_WIN32
-  const auto socket = static_cast<SOCKET>(socket_);
+  const auto socket = socket_.as<SOCKET>();
   const auto buffer = reinterpret_cast<LPWSABUF>(&buffer_);
   const auto& sockaddr = endpoint_.sockaddr();
   const auto size = endpoint_.size();
@@ -123,7 +123,7 @@ bool send::suspend() noexcept {
 
 bool send::resume() noexcept {
 #if ICE_OS_WIN32
-  const auto socket = reinterpret_cast<HANDLE>(socket_);
+  const auto socket = socket_.as<HANDLE>();
   if (!::GetOverlappedResult(socket, get(), &bytes_, FALSE)) {
     ec_ = ::GetLastError();
   } else {
@@ -163,7 +163,7 @@ bool send_some::await_ready() noexcept {
 
 bool send_some::suspend() noexcept {
 #if ICE_OS_WIN32
-  const auto socket = static_cast<SOCKET>(socket_);
+  const auto socket = socket_.as<SOCKET>();
   const auto buffer = reinterpret_cast<LPWSABUF>(&buffer_);
   const auto& sockaddr = endpoint_.sockaddr();
   const auto size = endpoint_.size();
@@ -185,7 +185,7 @@ bool send_some::suspend() noexcept {
 
 bool send_some::resume() noexcept {
 #if ICE_OS_WIN32
-  const auto socket = reinterpret_cast<HANDLE>(socket_);
+  const auto socket = socket_.as<HANDLE>();
   if (!::GetOverlappedResult(socket, get(), &bytes_, FALSE)) {
     ec_ = ::GetLastError();
   } else {

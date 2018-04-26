@@ -58,8 +58,8 @@ public:
   }
 
 private:
-  ice::context::handle_type::value_type context_;
-  net::socket::handle_type::value_type socket_;
+  ice::context::handle_view context_;
+  net::socket::handle_view socket_;
   tcp::socket client_;
 #if ICE_OS_WIN32
   constexpr static unsigned long buffer_size = sockaddr_storage_size + 16;
@@ -83,8 +83,8 @@ public:
   }
 
 private:
-  ice::context::handle_type::value_type context_;
-  net::socket::handle_type::value_type socket_;
+  ice::context::handle_view context_;
+  net::socket::handle_view socket_;
   const net::endpoint endpoint_;
 };
 
@@ -106,8 +106,8 @@ public:
   }
 
 private:
-  ice::context::handle_type::value_type context_;
-  net::socket::handle_type::value_type socket_;
+  ice::context::handle_view context_;
+  net::socket::handle_view socket_;
   net::buffer buffer_;
 #if ICE_OS_WIN32
   unsigned long bytes_ = 0;
@@ -133,8 +133,8 @@ public:
   }
 
 private:
-  ice::context::handle_type::value_type context_;
-  net::socket::handle_type::value_type socket_;
+  ice::context::handle_view context_;
+  net::socket::handle_view socket_;
   net::const_buffer buffer_;
   std::size_t size_ = 0;
 #if ICE_OS_WIN32
@@ -160,8 +160,8 @@ public:
   }
 
 private:
-  ice::context::handle_type::value_type context_;
-  net::socket::handle_type::value_type socket_;
+  ice::context::handle_view context_;
+  net::socket::handle_view socket_;
   net::const_buffer buffer_;
   std::size_t size_ = 0;
 #if ICE_OS_WIN32

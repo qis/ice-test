@@ -90,7 +90,7 @@ bool accept::await_ready() noexcept {
 
 bool accept::suspend() noexcept {
 #if ICE_OS_WIN32
-  const auto socket = static_cast<SOCKET>(socket_);
+  const auto socket = socket_.as<SOCKET>();
   const auto client = client_.handle().as<SOCKET>();
   while (true) {
     if (::AcceptEx(socket, client, &buffer_, 0, buffer_size, buffer_size, &bytes_, get())) {
@@ -114,7 +114,7 @@ bool accept::suspend() noexcept {
 bool accept::resume() noexcept {
 #if ICE_OS_WIN32
   DWORD bytes = 0;
-  if (!::GetOverlappedResult(reinterpret_cast<HANDLE>(socket_), get(), &bytes, FALSE)) {
+  if (!::GetOverlappedResult(socket_.as<HANDLE>(), get(), &bytes, FALSE)) {
     if (const auto rc = ::GetLastError(); rc != WSAECONNRESET) {
       ec_ = rc;
       return true;
@@ -182,7 +182,7 @@ bool connect::suspend() noexcept {
     ec_ = connect.ec;
     return false;
   }
-  const auto socket = static_cast<SOCKET>(socket_);
+  const auto socket = socket_.as<SOCKET>();
   if (connect(socket, &endpoint_.sockaddr(), endpoint_.size(), nullptr, 0, nullptr, get())) {
     return false;
   }
@@ -199,7 +199,7 @@ bool connect::suspend() noexcept {
 bool connect::resume() noexcept {
 #if ICE_OS_WIN32
   DWORD bytes = 0;
-  const auto socket = reinterpret_cast<HANDLE>(socket_);
+  const auto socket = socket_.as<HANDLE>();
   if (!::GetOverlappedResult(socket, get(), &bytes, FALSE)) {
     ec_ = ::GetLastError();
   }
@@ -235,7 +235,7 @@ bool recv::await_ready() noexcept {
 
 bool recv::suspend() noexcept {
 #if ICE_OS_WIN32
-  const auto socket = static_cast<SOCKET>(socket_);
+  const auto socket = socket_.as<SOCKET>();
   const auto buffer = reinterpret_cast<LPWSABUF>(&buffer_);
   if (::WSARecv(socket, buffer, 1, &bytes_, &flags_, get(), nullptr) != SOCKET_ERROR) {
     buffer_.size = bytes_;
@@ -253,7 +253,7 @@ bool recv::suspend() noexcept {
 
 bool recv::resume() noexcept {
 #if ICE_OS_WIN32
-  const auto socket = reinterpret_cast<HANDLE>(socket_);
+  const auto socket = socket_.as<HANDLE>();
   if (!::GetOverlappedResult(socket, get(), &bytes_, FALSE)) {
     ec_ = ::GetLastError();
   }
@@ -286,7 +286,7 @@ bool send::await_ready() noexcept {
 bool send::suspend() noexcept {
 #if ICE_OS_WIN32
   while (buffer_.size > 0) {
-    const auto socket = static_cast<SOCKET>(socket_);
+    const auto socket = socket_.as<SOCKET>();
     const auto buffer = reinterpret_cast<LPWSABUF>(&buffer_);
     if (::WSASend(socket, buffer, 1, &bytes_, 0, get(), nullptr) == SOCKET_ERROR) {
       if (const auto rc = ::WSAGetLastError(); rc != ERROR_IO_PENDING) {
@@ -310,7 +310,7 @@ bool send::suspend() noexcept {
 
 bool send::resume() noexcept {
 #if ICE_OS_WIN32
-  const auto socket = reinterpret_cast<HANDLE>(socket_);
+  const auto socket = socket_.as<HANDLE>();
   if (!::GetOverlappedResult(socket, get(), &bytes_, FALSE)) {
     ec_ = ::GetLastError();
   } else {
@@ -348,7 +348,7 @@ bool send_some::await_ready() noexcept {
 
 bool send_some::suspend() noexcept {
 #if ICE_OS_WIN32
-  const auto socket = static_cast<SOCKET>(socket_);
+  const auto socket = socket_.as<SOCKET>();
   const auto buffer = reinterpret_cast<LPWSABUF>(&buffer_);
   if (::WSASend(socket, buffer, 1, &bytes_, 0, get(), nullptr) == SOCKET_ERROR) {
     if (const auto rc = ::WSAGetLastError(); rc != ERROR_IO_PENDING) {
@@ -368,7 +368,7 @@ bool send_some::suspend() noexcept {
 
 bool send_some::resume() noexcept {
 #if ICE_OS_WIN32
-  const auto socket = reinterpret_cast<HANDLE>(socket_);
+  const auto socket = socket_.as<HANDLE>();
   if (!::GetOverlappedResult(socket, get(), &bytes_, FALSE)) {
     ec_ = ::GetLastError();
   } else {

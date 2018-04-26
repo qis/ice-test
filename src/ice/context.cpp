@@ -189,7 +189,7 @@ bool context::stop() noexcept {
 
 bool schedule::suspend() noexcept {
 #if ICE_OS_WIN32
-  if (!::PostQueuedCompletionStatus(reinterpret_cast<HANDLE>(context_), 0, 0, get())) {
+  if (!::PostQueuedCompletionStatus(context_.as<HANDLE>(), 0, 0, get())) {
     ec_ = ::GetLastError();
     return false;
   }

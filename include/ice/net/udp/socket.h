@@ -47,8 +47,8 @@ public:
   }
 
 private:
-  ice::context::handle_type::value_type context_;
-  net::socket::handle_type::value_type socket_;
+  ice::context::handle_view context_;
+  net::socket::handle_view socket_;
   net::endpoint& endpoint_;
   net::buffer buffer_;
   std::size_t size_ = 0;
@@ -76,8 +76,8 @@ public:
   }
 
 private:
-  ice::context::handle_type::value_type context_;
-  net::socket::handle_type::value_type socket_;
+  ice::context::handle_view context_;
+  net::socket::handle_view socket_;
   const net::endpoint& endpoint_;
   net::const_buffer buffer_;
   std::size_t size_ = 0;
@@ -104,8 +104,8 @@ public:
   }
 
 private:
-  ice::context::handle_type::value_type context_;
-  net::socket::handle_type::value_type socket_;
+  ice::context::handle_view context_;
+  net::socket::handle_view socket_;
   const net::endpoint& endpoint_;
   net::const_buffer buffer_;
   std::size_t size_ = 0;

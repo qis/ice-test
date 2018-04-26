@@ -30,6 +30,7 @@ public:
   };
   using handle_type = ice::handle<int, -1, close_type>;
 #endif
+  using handle_view = handle_type::view;
 
   explicit socket(ice::context& context) noexcept : context_(context) {
   }
