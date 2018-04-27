@@ -2,15 +2,15 @@
 #include <vector>
 
 #if ICE_OS_WIN32
-#include <windows.h>
-#include <winsock2.h>
+#  include <windows.h>
+#  include <winsock2.h>
 #elif ICE_OS_LINUX
-#include <sys/epoll.h>
-#include <sys/eventfd.h>
-#include <unistd.h>
+#  include <sys/epoll.h>
+#  include <sys/eventfd.h>
+#  include <unistd.h>
 #elif ICE_OS_FREEBSD
-#include <sys/event.h>
-#include <unistd.h>
+#  include <sys/event.h>
+#  include <unistd.h>
 #endif
 
 namespace ice {
@@ -67,7 +67,7 @@ context::context() {
   if (!events) {
     throw ice::system_error(errno, "create context event");
   }
-  static epoll_event nev = { EPOLLONESHOT,{} };
+  static epoll_event nev = { EPOLLONESHOT, {} };
   if (::epoll_ctl(handle, EPOLL_CTL_ADD, events, &nev) < 0) {
     throw ice::system_error(errno, "add context event");
   }
@@ -174,7 +174,7 @@ void context::interrupt() noexcept {
   static epoll_event nev{ EPOLLOUT | EPOLLONESHOT, {} };
   ::epoll_ctl(handle_, EPOLL_CTL_MOD, events_, &nev);
 #elif ICE_OS_FREEBSD
-  struct kevent nev{};
+  struct kevent nev {};
   EV_SET(&nev, 0, EVFILT_USER, 0, NOTE_TRIGGER, 0, nullptr);
   ::kevent(handle_, &nev, 1, nullptr, 0, nullptr);
 #endif

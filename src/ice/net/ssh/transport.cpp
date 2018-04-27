@@ -4,12 +4,12 @@
 #include <cstring>
 
 #if ICE_OS_WIN32
-#include <windows.h>
-#include <winsock2.h>
-#include <new>
+#  include <windows.h>
+#  include <winsock2.h>
+#  include <new>
 #else
-#include <sys/types.h>
-#include <sys/socket.h>
+#  include <sys/types.h>
+#  include <sys/socket.h>
 #endif
 
 namespace ice::net::ssh {

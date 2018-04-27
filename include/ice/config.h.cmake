@@ -2,25 +2,25 @@
 #include <cstddef>
 
 #if defined(WIN32)
-#define ICE_OS_WIN32 1
+#  define ICE_OS_WIN32 1
 #elif defined(__linux__)
-#define ICE_OS_LINUX 1
+#  define ICE_OS_LINUX 1
 #elif defined(__FreeBSD__)
-#define ICE_OS_FREEBSD 1
+#  define ICE_OS_FREEBSD 1
 #else
-#error Unsupported OS
+#  error Unsupported OS
 #endif
 
 #ifndef ICE_OS_WIN32
-#define ICE_OS_WIN32 0
+#  define ICE_OS_WIN32 0
 #endif
 
 #ifndef ICE_OS_LINUX
-#define ICE_OS_LINUX 0
+#  define ICE_OS_LINUX 0
 #endif
 
 #ifndef ICE_OS_FREEBSD
-#define ICE_OS_FREEBSD 0
+#  define ICE_OS_FREEBSD 0
 #endif
 
 namespace ice {

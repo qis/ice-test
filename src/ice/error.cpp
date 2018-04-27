@@ -4,11 +4,11 @@
 #include <cctype>
 
 #if ICE_OS_WIN32
-#include <windows.h>
-#include <wchar.h>
+#  include <windows.h>
+#  include <wchar.h>
 #else
-#include <locale.h>
-#include <string.h>
+#  include <locale.h>
+#  include <string.h>
 #endif
 
 namespace ice {

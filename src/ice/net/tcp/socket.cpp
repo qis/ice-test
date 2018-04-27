@@ -2,16 +2,16 @@
 #include <cassert>
 
 #if ICE_OS_WIN32
-#include <windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <mswsock.h>
-#include <new>
+#  include <windows.h>
+#  include <winsock2.h>
+#  include <ws2tcpip.h>
+#  include <mswsock.h>
+#  include <new>
 #else
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
+#  include <sys/types.h>
+#  include <sys/socket.h>
+#  include <netinet/in.h>
+#  include <unistd.h>
 #endif
 
 namespace ice::net::tcp {
@@ -163,11 +163,11 @@ bool connect::await_ready() noexcept {
       break;
     }
     if (errno == EINTR) {
-#if ICE_OS_LINUX
+#  if ICE_OS_LINUX
       continue;
-#else
+#  else
       break;
-#endif
+#  endif
     }
     ec_ = errno;
     break;

@@ -85,7 +85,8 @@ public:
     context_(context.handle()), handle_(context.events()), ready_(!queue && context.is_current()) {
   }
 #else
-  schedule(ice::context& context, bool queue) noexcept : context_(context.handle()), ready_(!queue && context.is_current()) {
+  schedule(ice::context& context, bool queue) noexcept :
+    context_(context.handle()), ready_(!queue && context.is_current()) {
   }
 #endif
 

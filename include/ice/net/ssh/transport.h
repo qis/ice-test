@@ -5,8 +5,8 @@
 #include <ice/net/tcp/socket.h>
 
 #if ICE_OS_WIN32
-#include <ice/net/buffer.h>
-#include <array>
+#  include <ice/net/buffer.h>
+#  include <array>
 #endif
 
 namespace ice::net::ssh {

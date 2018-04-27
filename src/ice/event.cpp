@@ -2,11 +2,11 @@
 #include <new>
 
 #if ICE_OS_WIN32
-#include <windows.h>
+#  include <windows.h>
 #elif ICE_OS_LINUX
-#include <sys/epoll.h>
+#  include <sys/epoll.h>
 #elif ICE_OS_FREEBSD
-#include <sys/event.h>
+#  include <sys/event.h>
 #endif
 
 namespace ice {

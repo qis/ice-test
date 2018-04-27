@@ -4,27 +4,31 @@
 #include <cstdint>
 
 #ifndef ICE_LIKELY
-#ifdef __has_builtin
-#if __has_builtin(__builtin_expect)
-#define ICE_LIKELY(expr) __builtin_expect(expr, 1)
-#else
-#define ICE_LIKELY(expr) expr
+#  ifdef __has_builtin
+#    if __has_builtin(__builtin_expect)
+#      define ICE_LIKELY(expr) __builtin_expect(expr, 1)
+#    endif
+#  endif
 #endif
-#else
-#define ICE_LIKELY(expr) expr
-#endif
+#ifndef ICE_LIKELY
+#  define ICE_LIKELY(expr) expr
 #endif
 
 #ifndef ICE_UNLIKELY
-#ifdef __has_builtin
-#if __has_builtin(__builtin_expect)
-#define ICE_UNLIKELY(expr) __builtin_expect(expr, 0)
-#else
-#define ICE_UNLIKELY(expr) expr
+#  ifdef __has_builtin
+#    if __has_builtin(__builtin_expect)
+#      define ICE_UNLIKELY(expr) __builtin_expect(expr, 0)
+#    endif
+#  endif
 #endif
-#else
-#define ICE_UNLIKELY(expr) expr
+#ifndef ICE_UNLIKELY
+#  define ICE_UNLIKELY(expr) expr
 #endif
+
+#ifdef __clang__
+#  define ICE_OFFSETOF __builtin_offsetof
+#else
+#  define ICE_OFFSETOF(s, m) ((size_t)(&reinterpret_cast<char const volatile&>((((s*)0)->m))))
 #endif
 
 namespace ice {

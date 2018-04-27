@@ -396,12 +396,12 @@ public:
 
 private:
 #if _MSC_VER
-#pragma warning(push)
-#pragma warning(disable : 4324)
+#  pragma warning(push)
+#  pragma warning(disable : 4324)
 #endif
   alignas(T) char m_valueStorage[sizeof(T)];
 #if _MSC_VER
-#pragma warning(pop)
+#  pragma warning(pop)
 #endif
 };
 
@@ -500,7 +500,7 @@ public:
     return !m_coroutine || m_coroutine.done();
   }
 
-  auto operator co_await() const & noexcept {
+  auto operator co_await() const& noexcept {
     struct awaitable : awaitable_base {
       using awaitable_base::awaitable_base;
 
@@ -514,7 +514,7 @@ public:
     return awaitable{ m_coroutine };
   }
 
-  auto operator co_await() const && noexcept {
+  auto operator co_await() const&& noexcept {
     struct awaitable : awaitable_base {
       using awaitable_base::awaitable_base;
 

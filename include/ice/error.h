@@ -85,11 +85,9 @@ public:
     return category().default_error_condition(value());
   }
 
-  [[nodiscard]] std::string message() const {
-    return default_error_condition().message();
-  }
+  [[nodiscard]] std::string message() const { return default_error_condition().message(); }
 
-  [[nodiscard]] constexpr int combined() const noexcept {
+    [[nodiscard]] constexpr int combined() const noexcept {
     return value_;
   }
 

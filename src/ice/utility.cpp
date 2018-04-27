@@ -2,9 +2,9 @@
 #include <cassert>
 
 #if ICE_OS_WIN32
-#include <windows.h>
+#  include <windows.h>
 #else
-#include <pthread.h>
+#  include <pthread.h>
 #endif
 
 namespace ice {
