@@ -15,8 +15,8 @@ public:
   endpoint() noexcept;
   endpoint(const std::string& host, std::uint16_t port);
 
-  endpoint(const endpoint& other) = default;
-  endpoint& operator=(const endpoint& other) = default;
+  endpoint(const endpoint& other) noexcept;
+  endpoint& operator=(const endpoint& other) noexcept;
 
   ~endpoint();
 

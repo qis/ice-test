@@ -33,7 +33,7 @@ int option::keep_alive::name() const noexcept {
 }
 
 option::linger::linger(std::optional<std::chrono::seconds> timeout) noexcept {
-  new (&value_) ::linger{};
+  new (static_cast<void*>(&value_))::linger{};
   auto& data = reinterpret_cast<::linger&>(value_);
   if (timeout) {
     data.l_onoff = 1;
@@ -45,6 +45,15 @@ option::linger::linger(std::optional<std::chrono::seconds> timeout) noexcept {
     }
     data.l_linger = static_cast<decltype(data.l_linger)>(timeout->count());
   }
+}
+
+option::linger::linger(const linger& other) noexcept {
+  new (static_cast<void*>(&value_))::linger{ reinterpret_cast<const ::linger&>(other.value_) };
+}
+
+option::linger& option::linger::operator=(const linger& other) noexcept {
+  reinterpret_cast<::linger&>(value_) = reinterpret_cast<const ::linger&>(other.value_);
+  return *this;
 }
 
 option::linger::~linger() {

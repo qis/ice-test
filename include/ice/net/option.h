@@ -45,8 +45,7 @@ protected:
 };
 
 template <typename T>
-class option_value : public option {
-};
+class option_value : public option {};
 
 template <>
 class option_value<bool> : public option {
@@ -132,8 +131,8 @@ public:
 
   linger(std::optional<std::chrono::seconds> timeout = {}) noexcept;
 
-  linger(const linger& other) = default;
-  linger& operator=(const linger& other) = default;
+  linger(const linger& other) noexcept;
+  linger& operator=(const linger& other) noexcept;
 
   virtual ~linger();
 

@@ -19,6 +19,15 @@ endpoint::endpoint() noexcept {
   new (&storage_) sockaddr_storage;
 }
 
+endpoint::endpoint(const endpoint& other) noexcept {
+  new (static_cast<void*>(&storage_)) sockaddr_storage{ reinterpret_cast<const sockaddr_storage&>(other.storage_) };
+}
+
+endpoint& endpoint::operator=(const endpoint& other) noexcept {
+  reinterpret_cast<sockaddr_storage&>(storage_) = reinterpret_cast<const sockaddr_storage&>(other.storage_);
+  return *this;
+}
+
 endpoint::~endpoint() {
   reinterpret_cast<sockaddr_storage&>(storage_).~sockaddr_storage();
 }
