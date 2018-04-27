@@ -4,6 +4,7 @@
 #if ICE_OS_WIN32
 #include <windows.h>
 #include <winsock2.h>
+#include <new>
 #else
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -43,7 +44,7 @@ bool recv::await_ready() noexcept {
 bool recv::suspend() noexcept {
 #if ICE_OS_WIN32
   const auto socket = socket_.as<SOCKET>();
-  const auto buffer = reinterpret_cast<LPWSABUF>(&buffer_);
+  const auto buffer = std::launder(reinterpret_cast<LPWSABUF>(&buffer_));
   auto& sockaddr = endpoint_.sockaddr();
   auto& size = endpoint_.size();
   if (::WSARecvFrom(socket, buffer, 1, &bytes_, &flags_, &sockaddr, &size, get(), nullptr) != SOCKET_ERROR) {
@@ -97,7 +98,7 @@ bool send::await_ready() noexcept {
 bool send::suspend() noexcept {
 #if ICE_OS_WIN32
   const auto socket = socket_.as<SOCKET>();
-  const auto buffer = reinterpret_cast<LPWSABUF>(&buffer_);
+  const auto buffer = std::launder(reinterpret_cast<LPWSABUF>(&buffer_));
   const auto& sockaddr = endpoint_.sockaddr();
   const auto size = endpoint_.size();
   while (buffer_.size > 0) {
@@ -164,7 +165,7 @@ bool send_some::await_ready() noexcept {
 bool send_some::suspend() noexcept {
 #if ICE_OS_WIN32
   const auto socket = socket_.as<SOCKET>();
-  const auto buffer = reinterpret_cast<LPWSABUF>(&buffer_);
+  const auto buffer = std::launder(reinterpret_cast<LPWSABUF>(&buffer_));
   const auto& sockaddr = endpoint_.sockaddr();
   const auto size = endpoint_.size();
   if (::WSASendTo(socket, buffer, 1, &bytes_, 0, &sockaddr, size, get(), nullptr) == SOCKET_ERROR) {

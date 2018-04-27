@@ -6,6 +6,7 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <mswsock.h>
+#include <new>
 #else
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -236,7 +237,7 @@ bool recv::await_ready() noexcept {
 bool recv::suspend() noexcept {
 #if ICE_OS_WIN32
   const auto socket = socket_.as<SOCKET>();
-  const auto buffer = reinterpret_cast<LPWSABUF>(&buffer_);
+  const auto buffer = std::launder(reinterpret_cast<LPWSABUF>(&buffer_));
   if (::WSARecv(socket, buffer, 1, &bytes_, &flags_, get(), nullptr) != SOCKET_ERROR) {
     buffer_.size = bytes_;
     return false;
@@ -287,7 +288,7 @@ bool send::suspend() noexcept {
 #if ICE_OS_WIN32
   while (buffer_.size > 0) {
     const auto socket = socket_.as<SOCKET>();
-    const auto buffer = reinterpret_cast<LPWSABUF>(&buffer_);
+    const auto buffer = std::launder(reinterpret_cast<LPWSABUF>(&buffer_));
     if (::WSASend(socket, buffer, 1, &bytes_, 0, get(), nullptr) == SOCKET_ERROR) {
       if (const auto rc = ::WSAGetLastError(); rc != ERROR_IO_PENDING) {
         ec_ = rc;
@@ -349,7 +350,7 @@ bool send_some::await_ready() noexcept {
 bool send_some::suspend() noexcept {
 #if ICE_OS_WIN32
   const auto socket = socket_.as<SOCKET>();
-  const auto buffer = reinterpret_cast<LPWSABUF>(&buffer_);
+  const auto buffer = std::launder(reinterpret_cast<LPWSABUF>(&buffer_));
   if (::WSASend(socket, buffer, 1, &bytes_, 0, get(), nullptr) == SOCKET_ERROR) {
     if (const auto rc = ::WSAGetLastError(); rc != ERROR_IO_PENDING) {
       ec_ = rc;

@@ -6,6 +6,7 @@
 #if ICE_OS_WIN32
 #include <windows.h>
 #include <winsock2.h>
+#include <new>
 #else
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -16,7 +17,7 @@ namespace ice::net::ssh {
 bool transport::suspend() noexcept {
 #if ICE_OS_WIN32
   const auto socket = socket_.as<SOCKET>();
-  const auto buffer = reinterpret_cast<LPWSABUF>(&buffer_);
+  const auto buffer = std::launder(reinterpret_cast<LPWSABUF>(&buffer_));
   switch (operation_) {
   case operation::recv:
     if (::WSARecv(socket, buffer, 1, &bytes_, &flags_, get(), nullptr) != SOCKET_ERROR) {
